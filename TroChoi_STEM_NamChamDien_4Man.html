@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khám Phá & Chế Tạo Nam Châm Điện - STEM KHTN</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --card-2: #273549;
+    --accent: #38bdf8;
+    --accent-2: #22c55e;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --border: rgba(255,255,255,0.12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #172554 100%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  header {
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 1.45rem;
+    color: var(--accent);
+  }
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .stats {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .badge {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .stepper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .step-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 12px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+  .step-btn.active {
+    background: var(--accent);
+    color: #062033;
+    border-color: var(--accent);
+  }
+  .step-btn.done {
+    border-color: var(--accent-2);
+    color: #86efac;
+  }
+  .panel {
+    background: rgba(30, 41, 59, 0.92);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 18px;
+  }
+  .panel h2 {
+    margin-top: 0;
+    color: var(--accent);
+    font-size: 1.25rem;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .item-card {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .item-card h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+  }
+  .choice-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  button.opt-btn, button.action-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s ease, opacity 0.2s ease;
+  }
+  button:hover { transform: translateY(-1px); }
+  .opt-btn {
+    background: #334155;
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .opt-btn.selected {
+    background: var(--accent);
+    color: #062033;
+  }
+  .action-btn.primary {
+    background: var(--accent-2);
+    color: #052e16;
+  }
+  .action-btn.secondary {
+    background: #475569;
+    color: var(--text);
+  }
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok {
+    background: rgba(34, 197, 94, 0.16);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+    color: #bbf7d0;
+  }
+  .feedback.err {
+    background: rgba(239, 68, 68, 0.16);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #fecaca;
+  }
+  .sim-box {
+    background: #0b1220;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 12px;
+  }
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  input[type="range"], select {
+    width: 100%;
+  }
+  select {
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--card-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .meter {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fde68a;
+    margin: 8px 0;
+  }
+  .nav-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  @media (max-width: 640px) {
+    .stepper { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>🧲 Khám Phá & Chế Tạo Nam Châm Điện</h1>
+      <p>Học liệu tương tác STEM Khoa học tự nhiên • 04 Màn thử thách</p>
+    </div>
+    <div class="stats">
+      <div class="badge" id="scoreBadge">Điểm: 0 / 40</div>
+      <div class="badge" id="stageBadge">Màn 1 / 4</div>
+    </div>
+  </header>
+
+  <div class="stepper">
+    <button class="step-btn active" id="tab-0" onclick="goStage(0)">Màn 1: Vật liệu & Bật/Tắt</button>
+    <button class="step-btn" id="tab-1" onclick="goStage(1)">Màn 2: Kiểm chứng & AI</button>
+    <button class="step-btn" id="tab-2" onclick="goStage(2)">Màn 3: Mô phỏng mạch</button>
+    <button class="step-btn" id="tab-3" onclick="goStage(3)">Màn 4: Cải tiến & Tổng kết</button>
+  </div>
+
+  <!-- MÀN 1 -->
+  <section class="panel" id="stage-0">
+    <h2>Màn 1: Nhận diện vật liệu & Nguyên lý bật/tắt</h2>
+    <p>Chọn đáp án đúng cho từng tình huống dưới đây rồi bấm <strong>Kiểm tra Màn 1</strong>.</p>
+    <div class="grid-2">
+      <div class="item-card">
+        <h3>1. Kẹp giấy bằng thép</h3>
+        <p style="color:var(--muted);font-size:0.9rem;">Khi bật nam châm điện, vật này có bị hút không?</p>
+        <div class="choice-row" data-q="q1">
+          <button class="opt-btn" onclick="pickOpt('q1', 'hut', this)">Bị hút</button>
+          <button class="opt-btn" onclick="pickOpt('q1', 'khong', this)">Không bị hút</button>
+        </div>
+      </div>
+      <div class="item-card">
+        <h3>2. Lon nhôm hoặc dây đồng trần</h3>
+        <p style="color:var(--muted);font-size:0.9rem;">Kim loại nhôm/đồng có bị nam châm hút mạnh như sắt/thép không?</p>
+        <div class="choice-row" data-q="q2">
+          <button class="opt-btn" onclick="pickOpt('q2', 'co', this)">Có, mọi kim loại đều bị hút</button>
+          <button class="opt-btn" onclick="pickOpt('q2', 'khong', this)">Không, chỉ vật liệu từ tính (sắt, thép...)</button>
+        </div>
+      </div>
+      <div class="item-card">
+        <h3>3. Vì sao cần bật để hút, tắt để thả?</h3>
+        <p style="color:var(--muted);font-size:0.9rem;">Lợi ích chính của nam châm điện trong thực tế là gì?</p>
+        <div class="choice-row" data-q="q3">
+          <button class="opt-btn" onclick="pickOpt('q3', 'kiemsoat', this)">Chủ động hút giữ và nhả vật đúng lúc</button>
+          <button class="opt-btn" onclick="pickOpt('q3', 'khongpin', this)">Không cần nguồn điện vẫn hoạt động</button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-footer">
+      <button class="action-btn primary" onclick="checkStage1()">Kiểm tra Màn 1 (+10 điểm)</button>
+      <button class="action-btn secondary" onclick="goStage(1)">Sang Màn 2 →</button>
+    </div>
+    <div class="feedback" id="fb-0"></div>
+  </section>
+
+  <!-- MÀN 2 -->
+  <section class="panel" id="stage-1" style="display:none;">
+    <h2>Màn 2: Kiểm chứng nhận định & Gợi ý từ AI</h2>
+    <p>Đọc gợi ý từ AI/mô phỏng và đối chiếu với kiến thức khoa học trước khi kết luận.</p>
+    <div class="grid-2">
+      <div class="item-card">
+        <h3>Gợi ý AI 1:</h3>
+        <p>"Nam châm vĩnh cửu có thể tắt hoàn toàn lực hút chỉ bằng một công tắc điện thông thường."</p>
+        <div class="choice-row" data-q="ai1">
+          <button class="opt-btn" onclick="pickOpt('ai1', 'sai', this)">Chưa chính xác (cần kiểm chứng lại)</button>
+          <button class="opt-btn" onclick="pickOpt('ai1', 'dung', this)">Hoàn toàn đúng</button>
+        </div>
+      </div>
+      <div class="item-card">
+        <h3>Gợi ý AI 2:</h3>
+        <p>"Lõi sắt non giúp tăng cường độ từ trường của cuộn dây khi có dòng điện chạy qua và dễ giảm từ dư khi ngắt mạch."</p>
+        <div class="choice-row" data-q="ai2">
+          <button class="opt-btn" onclick="pickOpt('ai2', 'dung', this)">Chính xác theo nguyên lý vật lý</button>
+          <button class="opt-btn" onclick="pickOpt('ai2', 'sai', this)">Sai, lõi sắt làm mất từ trường</button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-footer">
+      <button class="action-btn secondary" onclick="goStage(0)">← Về Màn 1</button>
+      <button class="action-btn primary" onclick="checkStage2()">Kiểm tra Màn 2 (+10 điểm)</button>
+      <button class="action-btn secondary" onclick="goStage(2)">Sang Màn 3 →</button>
+    </div>
+    <div class="feedback" id="fb-1"></div>
+  </section>
+
+  <!-- MÀN 3 -->
+  <section class="panel" id="stage-2" style="display:none;">
+    <h2>Màn 3: Mô phỏng mạch & Dự đoán – Thử – So sánh</h2>
+    <p>Hãy dự đoán trước rồi điều chỉnh thông số mô phỏng để kiểm chứng số kẹp thép ước lượng.</p>
+    <div class="sim-box">
+      <div class="controls">
+        <div>
+          <label for="turnsRange">Số vòng dây: <strong id="turnsVal">40</strong> vòng</label>
+          <input type="range" id="turnsRange" min="10" max="100" step="10" value="40" oninput="updateSim()">
+        </div>
+        <div>
+          <label for="coreSelect">Lõi cuộn dây:</label>
+          <select id="coreSelect" onchange="updateSim()">
+            <option value="air">Không có lõi (không khí)</option>
+            <option value="iron" selected>Lõi sắt non</option>
+          </select>
+        </div>
+        <div>
+          <label for="switchSelect">Trạng thái công tắc/nút nhấn:</label>
+          <select id="switchSelect" onchange="updateSim()">
+            <option value="off">Ngắt mạch (Thả)</option>
+            <option value="on" selected>Đóng mạch – nhấn ngắn (Hút)</option>
+          </select>
+        </div>
+      </div>
+      <div class="meter" id="simOutput">Số kẹp thép ước lượng hút được: 8 kẹp</div>
+      <p style="margin:6px 0 0;color:var(--muted);font-size:0.9rem;" id="simNote">
+        Lưu ý an toàn: Chỉ nhấn nút ngắn sau khi được giáo viên kiểm tra mạch để tránh nóng dây và hao pin.
+      </p>
+    </div>
+    <div class="nav-footer">
+      <button class="action-btn secondary" onclick="goStage(1)">← Về Màn 2</button>
+      <button class="action-btn primary" onclick="completeStage3()">Xác nhận đã thử nghiệm (+10 điểm)</button>
+      <button class="action-btn secondary" onclick="goStage(3)">Sang Màn 4 →</button>
+    </div>
+    <div class="feedback" id="fb-2"></div>
+  </section>
+
+  <!-- MÀN 4 -->
+  <section class="panel" id="stage-3" style="display:none;">
+    <h2>Màn 4: Cải tiến thiết kế & Tổng kết hành trình</h2>
+    <p>Nếu số kẹp hút được ở lần thử đầu còn ít và dây hơi ấm khi thử lâu, bạn chọn giải pháp cải tiến nào?</p>
+    <div class="grid-2">
+      <div class="item-card">
+        <h3>Phương án cải tiến thiết kế:</h3>
+        <div class="choice-row" data-q="imp">
+          <button class="opt-btn" onclick="pickOpt('imp', 'good', this)">Tăng số vòng dây gọn gàng, dùng lõi sắt non, giữ mạch an toàn & nhấn ngắn</button>
+          <button class="opt-btn" onclick="pickOpt('imp', 'bad', this)">Giữ nút nhấn liên tục thật lâu và chập thẳng hai cực nguồn</button>
+        </div>
+      </div>
+      <div class="item-card">
+        <h3>Nếu thả nút mà còn 1 kẹp dính nhẹ do từ dư:</h3>
+        <div class="choice-row" data-q="rem">
+          <button class="opt-btn" onclick="pickOpt('rem', 'good', this)">Ngắt mạch hoàn toàn, gõ/tách nhẹ nhàng và kiểm tra lại lõi</button>
+          <button class="opt-btn" onclick="pickOpt('rem', 'bad', this)">Bẻ cong lõi hoặc giật mạnh làm đứt dây</button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-footer">
+      <button class="action-btn secondary" onclick="goStage(2)">← Về Màn 3</button>
+      <button class="action-btn primary" onclick="checkStage4()">Hoàn tất & Xem tổng kết (+10 điểm)</button>
+      <button class="action-btn secondary" onclick="resetGame()">Chơi lại từ đầu</button>
+    </div>
+    <div class="feedback" id="fb-3"></div>
+  </section>
+</div>
+
+<script>
+  const state = {
+    picks: {},
+    points: { 0: 0, 1: 0, 2: 0, 3: 0 },
+    current: 0
+  };
+
+  function pickOpt(qKey, val, btn) {
+    state.picks[qKey] = val;
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function totalScore() {
+    return Object.values(state.points).reduce((a, b) => a + b, 0);
+  }
+
+  function updateHeader() {
+    document.getElementById('scoreBadge').textContent = `Điểm: ${totalScore()} / 40`;
+    document.getElementById('stageBadge').textContent = `Màn ${state.current + 1} / 4`;
+    for (let i = 0; i < 4; i++) {
+      const tab = document.getElementById('tab-' + i);
+      tab.classList.toggle('active', i === state.current);
+      tab.classList.toggle('done', state.points[i] > 0);
+    }
+  }
+
+  function goStage(idx) {
+    state.current = idx;
+    for (let i = 0; i < 4; i++) {
+      document.getElementById('stage-' + i).style.display = (i === idx) ? 'block' : 'none';
+    }
+    updateHeader();
+  }
+
+  function showFb(idx, ok, msg) {
+    const el = document.getElementById('fb-' + idx);
+    el.className = 'feedback show ' + (ok ? 'ok' : 'err');
+    el.innerHTML = msg;
+  }
+
+  function checkStage1() {
+    if (state.picks.q1 === 'hut' && state.picks.q2 === 'khong' && state.picks.q3 === 'kiemsoat') {
+      state.points[0] = 10;
+      showFb(0, true, 'Chính xác! Kẹp thép bị hút, nhôm/đồng không bị hút mạnh như vật liệu từ tính, và nam châm điện giúp chủ động bật để hút – tắt để thả.');
+    } else {
+      state.points[0] = 0;
+      showFb(0, false, 'Chưa chính xác ở một số câu. Hãy nhớ: nam châm hút mạnh sắt/thép, không hút nhôm/đồng, và lợi ích nổi bật là bật/tắt lực hút linh hoạt.');
+    }
+    updateHeader();
+  }
+
+  function checkStage2() {
+    if (state.picks.ai1 === 'sai' && state.picks.ai2 === 'dung') {
+      state.points[1] = 10;
+      showFb(1, true, 'Rất tốt! Bạn đã kiểm chứng chính xác nhận định của AI: nam châm vĩnh cửu không tắt lực hút bằng công tắc điện, còn lõi sắt non giúp tăng từ trường và giảm từ dư.');
+    } else {
+      state.points[1] = 0;
+      showFb(1, false, 'Hãy đối chiếu lại cả hai gợi ý của AI với kiến thức khoa học trước khi chọn.');
+    }
+    updateHeader();
+  }
+
+  function updateSim() {
+    const turns = parseInt(document.getElementById('turnsRange').value, 10);
+    const core = document.getElementById('coreSelect').value;
+    const sw = document.getElementById('switchSelect').value;
+    document.getElementById('turnsVal').textContent = turns;
+
+    let count = 0;
+    if (sw === 'on') {
+      const base = Math.max(1, Math.round(turns / 15));
+      count = core === 'iron' ? base * 2 : base;
+    }
+    document.getElementById('simOutput').textContent =
+      `Số kẹp thép ước lượng hút được: ${count} kẹp (${sw === 'on' ? 'Mạch đang đóng' : 'Mạch đang ngắt'})`;
+  }
+
+  function completeStage3() {
+    state.points[2] = 10;
+    updateHeader();
+    showFb(2, true, 'Đã ghi nhận kết quả mô phỏng! Khi tăng số vòng dây hoặc có lõi sắt non (và đóng mạch), lực hút tăng lên; khi ngắt mạch thì lực hút mất đi.');
+  }
+
+  function checkStage4() {
+    if (state.picks.imp === 'good' && state.picks.rem === 'good') {
+      state.points[3] = 10;
+      updateHeader();
+      const sum = totalScore();
+      showFb(3, true, `Hoàn thành xuất sắc hành trình! Tổng điểm của bạn: <strong>${sum} / 40</strong>. Hãy ghi lại kết quả và luôn tuân thủ an toàn khi thực hành lắp mạch.`);
+    } else {
+      state.points[3] = 0;
+      updateHeader();
+      showFb(3, false, 'Hãy chọn giải pháp cải tiến an toàn và hiệu quả (tuyệt đối không chập mạch hoặc thao tác thô bạo làm hỏng thiết bị).');
+    }
+  }
+
+  function resetGame() {
+    state.picks = {};
+    state.points = { 0: 0, 1: 0, 2: 0, 3: 0 };
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.innerHTML = ''; });
+    document.getElementById('turnsRange').value = 40;
+    document.getElementById('coreSelect').value = 'iron';
+    document.getElementById('switchSelect').value = 'on';
+    updateSim();
+    goStage(0);
+  }
+
+  updateSim();
+  updateHeader();
+</script>
+</body>
+</html>
